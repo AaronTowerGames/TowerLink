@@ -1,0 +1,10 @@
+Box_0.png
+size:1024,512
+filter:Linear,Linear
+pma:true
+01_5
+bounds:676,2,335,402
+01_6
+bounds:339,2,335,402
+01_7
+bounds:2,2,335,402
