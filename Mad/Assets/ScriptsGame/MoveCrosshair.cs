@@ -49,11 +49,15 @@ public class MoveCrosshair : MonoBehaviour
     private void JoystickDeactivated()
     {
         _isJoystickMoving = false;
+
+        EventBus.AutoFireOff.Invoke();
     }
 
     private void JoystickActivated()
     {
         _isJoystickMoving = true;
+
+        EventBus.AutoFireOn.Invoke();
     }
 
     public void MoveToPoint(Vector2 vector)
@@ -62,9 +66,9 @@ public class MoveCrosshair : MonoBehaviour
 
         float y = vector.y;
 
-        if ( vector.y < -_parentMaxY + _parentMaxY * 0.6f)
+        if ( vector.y < -_parentMaxY + _parentMaxY * 0.2f)
         {
-            y = -_parentMaxY + _parentMaxY * 0.6f;
+            y = -_parentMaxY + _parentMaxY * 0.2f;
         }
 
         _endPosition = new Vector3(vector.x, y, _startPosition.z);
@@ -105,12 +109,6 @@ public class MoveCrosshair : MonoBehaviour
             }
 
             _transform.localPosition = new Vector3(x, y, _transform.localPosition.z);
-
-            EventBus.AutoFireOn.Invoke();
-        }
-        else
-        {
-            EventBus.AutoFireOff.Invoke();
         }
     }
 }

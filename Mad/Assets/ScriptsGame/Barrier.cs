@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Barrier : MonoBehaviour, IDamageble
 {
+    private BarrierData _data;
+
+    public void SetData(BarrierData data)
+    {
+        _data = data;
+    }
+
     private void OnEnable()
     {
         EventBus.Hit.Subscribe(GetDamage);
@@ -14,9 +21,9 @@ public class Barrier : MonoBehaviour, IDamageble
         EventBus.Hit.Subscribe(GetDamage);
     }
 
-    private void GetDamage(IDamageble damageble, int damage)
+    private void GetDamage(GameObject barrier, int damage)
     {
-        if (damageble == this)
+        if (barrier == this)
             Debug.Log("Pitun");
     }
 }

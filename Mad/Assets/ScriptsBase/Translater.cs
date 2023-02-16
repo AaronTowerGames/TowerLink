@@ -1,12 +1,4 @@
-using System;
-
-[Serializable]
-public class TranslateData
-{
-    public string code;
-    public string language;
-    public string text;
-}
+using UnityEngine;
 
 public class Translater : GSC<Translater>
 {
@@ -14,9 +6,10 @@ public class Translater : GSC<Translater>
 
     private string FILENAME => "Translates_" + DataSettings.LANGUAGE.ToUpper() + ".json";
 
-    const string TRANSLATES_JSON = "{\"Items\":[{\"code\":\"loading\",\"language\":\"ru\",\"text\":\"\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...\"},{\"code\":\"enter\",\"language\":\"ru\",\"text\":\"\u0412\u043e\u0439\u0442\u0438\"}]}";
+    //private readonly string TRANSLATES_JSON = "{\"Items\":[{\"code\":\"loading\",\"language\":\"ru\",\"text\":\"\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...\"},{\"code\":\"enter\",\"language\":\"ru\",\"text\":\"\u0412\u043e\u0439\u0442\u0438\"}]}";
 
-    private TranslateData[] data;
+    [SerializeField]
+    private TranslateData[] _data;
 
 
     public string GetTranslate(string _code, string defaultText = "")
@@ -25,11 +18,11 @@ public class Translater : GSC<Translater>
         if (_code != null)
         {
             //Debug.Log("CODE NOT NULL: " + _code);
-            if (data != null)
+            if (_data != null)
             {
                 //Debug.Log("TRANSLATE DATA NOT NULL");
                 bool find = false;
-                foreach (var translate in data)
+                foreach (var translate in _data)
                 {
                     //Debug.Log("SEARCH CODE: " + _code.ToLower() + " TRANSLATE CODE: " + translate.code.ToLower());
                     if (translate.code.ToLower() == _code.ToLower())
@@ -71,45 +64,6 @@ public class Translater : GSC<Translater>
         return null;
     }
 
-    private void LoadTranslatesData()
-    {
-        TranslateData[] _data;
-        IsNeedDownload = true; 
-        if (IsNeedDownload)
-        {
-            _data = null;
-        }
-        else
-        {
-            _data = FileController2.LoadJsonsData<TranslateData>(FILENAME);
-        }
-
-        if (_data != null)
-        {
-            DatasLoaded(_data);
-            return;
-        }
-        
-        _data = JsonHelper.FromJson<TranslateData>(TRANSLATES_JSON);
-        DatasLoaded(_data);
-    }
-
-    private void DatasLoaded(TranslateData[] _data)
-    {        
-        if (_data != null)
-        {
-            FileController2.SaveJsonsData(_data, FILENAME);
-
-            data = _data;
-            EventBus.OnLoadedTranslates.Invoke();
-        }
-        else
-        {
-            Notification.Instance.ShowNotice("TEXTS HAS NOT BEEN LOADED");
-            //LoadTranslatesData(); //TODO: цикл без выхода
-        }
-    }
-
     private void OnEnable()
     {
         EventBus.LoadTranslates.Subscribe(LoadTranslatesData);
@@ -118,5 +72,44 @@ public class Translater : GSC<Translater>
     private void OnDisable()
     {
         EventBus.LoadTranslates.Unsubscribe(LoadTranslatesData);
+    }
+
+    private void LoadTranslatesData()
+    {
+        DataLoadChecker.Instance.AddToCheck(GetType());
+
+        TranslateData[] data;
+        IsNeedDownload = true; 
+        if (IsNeedDownload)
+        {
+            data = null;
+        }
+        else
+        {
+            data = FileController2.LoadJsonsData<TranslateData>(FILENAME);
+        }
+
+        if (data != null)
+        {
+            DatasLoaded(data);
+            return;
+        }
+
+        //_data = JsonHelper.FromJson<TranslateData>(TRANSLATES_JSON);
+        DatasLoaded(_data);
+    }
+
+    private void DatasLoaded(TranslateData[] data)
+    {        
+        if (data != null)
+        {
+            _data = data;
+            DataLoadChecker.Instance.Loaded(GetType());
+            FileController2.SaveJsonsData(data, FILENAME);
+        }
+        else
+        {
+            Notification.Instance.ShowNotice("TEXTS HAS NOT BEEN LOADED");
+        }
     }
 }

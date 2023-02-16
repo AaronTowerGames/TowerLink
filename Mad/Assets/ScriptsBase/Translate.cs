@@ -5,22 +5,26 @@ using UnityEngine.UI;
 public class Translate : MonoBehaviour
 {
     [SerializeField]
-    private string code;
+    private string _code;
 
-    private Text text;
-    private TMP_Text text_PRO;
+    [SerializeField]
+    private string _default;
+
+    private Text _text;
+    private TMP_Text _text_PRO;
 
     private void Start()
     {
-        text = GetComponent<Text>();
-        if (text != null)
+        TryGetComponent<Text>(out _text);
+
+        if (_text != null)
         {
-            text.text = Translater.Instance.GetTranslate(code);
+            _text.text = Translater.Instance.GetTranslate(_code);
         }
         else
         {
-            text_PRO = GetComponent<TMP_Text>();
-            text_PRO.text = Translater.Instance.GetTranslate(code);
+            _text_PRO = GetComponent<TMP_Text>();
+            _text_PRO.text = Translater.Instance.GetTranslate(_code);
         }
     }
 
@@ -41,18 +45,18 @@ public class Translate : MonoBehaviour
 
     private string GetText()
     {
-        return Translater.Instance.GetTranslate(code);
+        return Translater.Instance.GetTranslate(_code);
     }
 
     private void ChangeText(string _text)
     {
-        if (text != null)
+        if (this._text != null)
         {
-            text.text = _text;
+            this._text.text = _text;
         }
         else
         {
-            text_PRO.text = _text;
+            _text_PRO.text = _text;
         }
     }
     

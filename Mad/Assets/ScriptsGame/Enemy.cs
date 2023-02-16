@@ -1,3 +1,5 @@
+using Spine.Unity;
+using System;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageble
@@ -5,44 +7,83 @@ public class Enemy : MonoBehaviour, IDamageble
     [SerializeField]
     private EnemyData _data;
 
-    private void Start()
+    [SerializeField]
+    private SkeletonAnimation _skeletonAnimation;
+
+    public void SetData(EnemyData data, int line)
     {
-        EnemyData data = new EnemyData
-        {
-            id = 1,
-            hp = 100
-        };
-        SetData(data);
+        _data = new EnemyData();
+        _data.type = data.type;
+        _data.id = data.id;
+        _data.hp = data.hp;
+        _data.aimTime = data.aimTime;
+
+        SetScale(line);
+        SetLayer(line);
+        EventBus.OnAddEnemyInScene.Invoke(this);
     }
 
+    private void SetScale(int line)
+    {
+        if (line == 1)
+        {
+            transform.localScale = new Vector3(DataSettings.LINE1_SCALE, DataSettings.LINE1_SCALE, 1);
+        }
+        else if (line == 2)
+        {
+            transform.localScale = new Vector3(DataSettings.LINE2_SCALE, DataSettings.LINE2_SCALE, 1);
+        }
+        else if (line == 3)
+        {
+            transform.localScale = new Vector3(DataSettings.LINE3_SCALE, DataSettings.LINE3_SCALE, 1);
+        }
+    }
+
+    private void SetLayer(int line)
+    {
+        if (line == 1)
+        {
+            _skeletonAnimation.GetComponent<MeshRenderer>().sortingOrder = DataSettings.LINE1_LAYER+5;
+        }
+        else if (line == 2)
+        {
+            _skeletonAnimation.GetComponent<MeshRenderer>().sortingOrder = DataSettings.LINE2_LAYER+5;
+        }
+        else if (line == 3)
+        {
+            _skeletonAnimation.GetComponent<MeshRenderer>().sortingOrder = DataSettings.LINE3_LAYER+5;
+        }
+    }
+    /*
     public EnemyData GetData()
     {
         return _data;
     }
 
-    public void SetData(EnemyData enemyData)
-    {
-        _data = enemyData;
-    }
     public int GetId()
     {
         return _data.id;
-    }
+    }/**/
 
     private void OnEnable()
     {
         EventBus.Hit.Subscribe(GetDamage);
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        EventBus.Hit.Subscribe(GetDamage);
+        EventBus.Hit.Unsubscribe(GetDamage);
     }
 
-    private void GetDamage(IDamageble damageble, int damage)
+    private void GetDamage(GameObject enemy, int damage)
     {
-        if (damageble == this)
+        Debug.Log("POIMAL");
+        if (enemy == this.gameObject)
+        {
+            Debug.Log("SUDA URON");
             Damage(damage);
+        }
+            
     }
 
     private void Damage(int damage)
