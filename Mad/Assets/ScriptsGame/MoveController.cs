@@ -1,4 +1,5 @@
 using Spine.Unity;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ public class MoveController : MonoBehaviour
 
     private Vector3 _position;
 
-    private bool _isMoving = false, _isMoveRight = false;
+    private bool _isMoving = false, _isMoveRight = false, _isStay = false;
 
     [SerializeField]
     private int frame = 0, frames = 60;
@@ -37,6 +38,8 @@ public class MoveController : MonoBehaviour
         EventBus.CalcHeroPositions.Subscribe(CalcHeroPositions);
         EventBus.MoveLeftButtonClicked.Subscribe(MoveLeft);
         EventBus.MoveRightButtonClicked.Subscribe(MoveRight);
+        EventBus.HeroUP.Subscribe(HeroUP);
+        EventBus.HeroDOWN.Subscribe(HeroDOWN);
     }
 
     private void OnDisable()
@@ -44,6 +47,26 @@ public class MoveController : MonoBehaviour
         EventBus.CalcHeroPositions.Unsubscribe(CalcHeroPositions);
         EventBus.MoveLeftButtonClicked.Unsubscribe(MoveLeft);
         EventBus.MoveRightButtonClicked.Unsubscribe(MoveRight);
+        EventBus.HeroUP.Unsubscribe(HeroUP);
+        EventBus.HeroDOWN.Unsubscribe(HeroDOWN);
+    }
+
+    private void HeroDOWN()
+    {
+        if (_isStay)
+        {
+            _skeletonAnimation.AnimationName = "sit_idle";
+            _isStay = false;
+        }
+    }
+
+    private void HeroUP()
+    {
+        if (!_isStay)
+        {
+            _skeletonAnimation.AnimationName = "stand_idle";
+            _isStay = true;
+        }
     }
 
     private void CalcHeroPositions(int countPoss)
@@ -77,8 +100,15 @@ public class MoveController : MonoBehaviour
             _nowPosition += 1;
 
             _isMoveRight = true;
-
-            _skeletonAnimation.AnimationName = "sit_go_right";
+            if (_isStay)
+            {
+                _skeletonAnimation.AnimationName = "stand_go_right";
+            }
+            else
+            {
+                _skeletonAnimation.AnimationName = "sit_go_right";
+            }
+            
 
             _isMoving = true;
         }
@@ -103,7 +133,15 @@ public class MoveController : MonoBehaviour
 
             _nowPosition -= 1;
 
-            _skeletonAnimation.AnimationName = "sit_go_left";
+            if (_isStay)
+            {
+                _skeletonAnimation.AnimationName = "stand_go_left";
+            }
+            else
+            {
+                _skeletonAnimation.AnimationName = "sit_go_left";
+            }
+            
 
             _isMoving = true;
         }

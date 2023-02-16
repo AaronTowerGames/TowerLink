@@ -58,6 +58,7 @@ public class Attack : MonoBehaviour
 
     private void AutoFireOn()
     {
+        EventBus.HeroUP.Invoke();
         isAutoFire = true;
         if (_heroEquipment.LeftArm() != null)
         {
@@ -73,17 +74,20 @@ public class Attack : MonoBehaviour
 
     private void AutoFireOff()
     {
+        EventBus.HeroDOWN.Invoke();
         isAutoFire = false;
         StopAllCoroutines();
     }
 
     private void FireFromButton()
     {
+        EventBus.HeroUP.Invoke();
         if (!isAutoFire)
         {
             FireLeftArm();
             FireRightArm();
         }
+        EventBus.HeroDOWN.Invoke();
     }
 
     private void FireLeftArm()

@@ -96,6 +96,10 @@ public static class EventBus
     public static readonly Evt FireButtonClicked = new Evt();
     public static readonly Evt AutoFireOn = new Evt();
     public static readonly Evt AutoFireOff = new Evt();
+    public static readonly Evt HeroUP = new Evt();
+    public static readonly Evt HeroDOWN = new Evt();
+    
+
 
 
     //Load
