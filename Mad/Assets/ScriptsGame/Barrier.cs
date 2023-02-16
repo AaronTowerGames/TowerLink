@@ -23,7 +23,7 @@ public class Barrier : MonoBehaviour, IDamageble
 
     private void GetDamage(GameObject barrier, int damage)
     {
-        if (barrier == this)
+        if (barrier == this.gameObject)
             Debug.Log("Pitun");
     }
 }

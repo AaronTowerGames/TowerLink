@@ -136,10 +136,12 @@ public class Spawner : MonoBehaviour
         foreach (var enemy in _enemiesToAdd)
         {
             var obj = FactoryAbstractHandler.Instance.CreateEnemyPistolMan();
-            obj.transform.position = spawn.GetPosition() - new Vector3(0, 50, 0);
+            Vector3 vector = new Vector3(0, 50, 0);
+            var line = spawn.GetLine();
+            obj.transform.position = spawn.GetPosition() - vector;
             obj.transform.SetParent(spawn.transform.parent);
             spawn.ClosePoint();
-            obj.SetData(enemy, spawn.GetLine());
+            obj.SetData(enemy, line);
             _enemiesToAdd.Remove(enemy);
             break;
         }

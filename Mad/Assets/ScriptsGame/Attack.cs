@@ -105,6 +105,7 @@ public class Attack : MonoBehaviour
         RaycastHit2D ray2d = Physics2D.Raycast(new Vector3(p.x, p.y, 0), Vector2.zero);
         if (ray2d.collider != null)
         {
+            Debug.Log("Попал?" + ray2d.collider.name);
             IDamageble damageble;
             if (ray2d.collider.TryGetComponent<IDamageble>(out damageble))
             {
@@ -113,7 +114,13 @@ public class Attack : MonoBehaviour
                 {
                     Debug.Log("L DAMAGU: " + damage + " TYPE OBJECT: " + damageble.GetType() + " ENEMY: " + enemy);
                     EventBus.Hit.Invoke(enemy.gameObject, damage);
+                }
 
+                Barrier barrier;
+                if (ray2d.collider.TryGetComponent<Barrier>(out barrier))
+                {
+                    Debug.Log("L DAMAGU: " + damage + " TYPE OBJECT: " + damageble.GetType() + " ENEMY: " + barrier);
+                    EventBus.Hit.Invoke(barrier.gameObject, damage);
                 }
             }
         }
@@ -152,9 +159,10 @@ public class Attack : MonoBehaviour
         damage += _heroEquipment.RightArm().damage;
 
         var p = new Vector3(_transform.position.x, _transform.position.y, 0);
-        RaycastHit2D ray2d = Physics2D.Raycast(new Vector3 (p.x, p.y, 0), Vector2.zero);
-        if (ray2d.collider != null)
+        RaycastHit2D ray2d = Physics2D.Raycast(new Vector3 (p.x, p.y, 0), Vector2.zero, 10);
+        if (ray2d.collider != null) //Не учитываем слой героя
         {
+            Debug.Log("Попал?" + ray2d.collider.name);
             IDamageble damageble;
             if (ray2d.collider.TryGetComponent<IDamageble>(out damageble))
             {
@@ -163,9 +171,19 @@ public class Attack : MonoBehaviour
                 {
                     Debug.Log("R DAMAGU: " + damage + " TYPE OBJECT: " + damageble.GetType() + " ENEMY: " + enemy);
                     EventBus.Hit.Invoke(enemy.gameObject, damage);
+                }
 
+                Barrier barrier;
+                if (ray2d.collider.TryGetComponent<Barrier>(out barrier))
+                {
+                    Debug.Log("R DAMAGU: " + damage + " TYPE OBJECT: " + damageble.GetType() + " ENEMY: " + barrier);
+                    EventBus.Hit.Invoke(barrier.gameObject, damage);
                 }
             }
+        }
+        else
+        {
+
         }
 
         /*

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6947231106963703682}
   - component: {fileID: 464913092329238378}
   - component: {fileID: 464913092329238379}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pistol_man_NEW
   m_TagString: Enemy
   m_Icon: {fileID: 0}
