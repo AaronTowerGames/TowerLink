@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -93,12 +92,10 @@ public class Spawner : MonoBehaviour
         _enemiesToAdd.Add(data);
         if (tryspawn == null)
         {
-            Debug.Log("CREATE TRY SPAWN");
             tryspawn = TrySpawn();
         }
         else
         {
-            Debug.Log("STOP TRY SPAWN");
             StopCoroutine(tryspawn);
         }
         StartCoroutine(TrySpawn());
@@ -106,7 +103,6 @@ public class Spawner : MonoBehaviour
 
     private IEnumerator TrySpawn()
     {
-        Debug.Log("TrySpawn");
         while (_enemiesToAdd.Count > 0)
         {
             TryAddEnemy();
@@ -140,7 +136,7 @@ public class Spawner : MonoBehaviour
         foreach (var enemy in _enemiesToAdd)
         {
             var obj = FactoryAbstractHandler.Instance.CreateEnemyPistolMan();
-            obj.transform.position = spawn.GetPosition();
+            obj.transform.position = spawn.GetPosition() - new Vector3(0, 50, 0);
             obj.transform.SetParent(spawn.transform.parent);
             spawn.ClosePoint();
             obj.SetData(enemy, spawn.GetLine());

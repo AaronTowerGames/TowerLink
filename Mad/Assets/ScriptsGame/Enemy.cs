@@ -77,10 +77,9 @@ public class Enemy : MonoBehaviour, IDamageble
 
     private void GetDamage(GameObject enemy, int damage)
     {
-        Debug.Log("POIMAL");
         if (enemy == this.gameObject)
         {
-            Debug.Log("SUDA URON");
+            Debug.Log("SUDA URON" + damage);
             Damage(damage);
         }
             

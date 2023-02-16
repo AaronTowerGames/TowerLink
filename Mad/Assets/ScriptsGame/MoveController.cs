@@ -55,7 +55,7 @@ public class MoveController : MonoBehaviour
         for (int i = -startX; i <= startX; i++)
         {
             var x = i * DataSettings.CELL_X_DISTANCE;
-            _positions.Add(new Vector3(x, DataSettings.START_Y_DISTANCE, 0));
+            _positions.Add(new Vector3(x, 0, 0));
         }
     }
 
@@ -63,7 +63,7 @@ public class MoveController : MonoBehaviour
     {
         if (_nowPosition < _maxPos)
         {
-            _position = _transform.position;
+            _position = _transform.localPosition;
 
             if (frame != 0)
             {
@@ -88,7 +88,7 @@ public class MoveController : MonoBehaviour
     {
         if (_nowPosition > _minPos)
         {
-            _position = _transform.position;
+            _position = _transform.localPosition;
 
             if (frame != 0)
             {
@@ -116,7 +116,7 @@ public class MoveController : MonoBehaviour
             frame++;
             changeFrame = frame / (float)frames;
 
-            _transform.position = Vector3.Lerp(_position, _positions[_nowPosition], changeFrame);
+            _transform.localPosition = Vector3.Lerp(_position, _positions[_nowPosition], changeFrame);
             
             if (frame >= frames)
             {

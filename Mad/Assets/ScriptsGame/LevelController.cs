@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
 public class LevelController : MonoBehaviour
 {
-    private int _currentLevel = 1;
+    private LevelData _levelData = new LevelData();
 
     private void OnEnable()
     {
@@ -10,6 +11,7 @@ public class LevelController : MonoBehaviour
         EventBus.EndLevelTime.Subscribe(Lose);
         EventBus.LevelWin.Subscribe(Win);
         EventBus.LevelLose.Subscribe(Lose);
+        EventBus.OnSetHeroEquipment.Subscribe(SetPositionHero);
     }
 
     private void OnDestroy()
@@ -18,11 +20,18 @@ public class LevelController : MonoBehaviour
         EventBus.EndLevelTime.Unsubscribe(Lose);
         EventBus.LevelWin.Unsubscribe(Win);
         EventBus.LevelLose.Unsubscribe(Lose);
+        EventBus.OnSetHeroEquipment.Unsubscribe(SetPositionHero);
+    }
+
+    private void SetPositionHero()
+    {
+        EventBus.CalcHeroPositions.Invoke(_levelData._countPoss);
     }
 
     private void Set(LevelData obj)
     {
-        _currentLevel = obj.level;
+        _levelData = obj;
+        
         EventBus.OnSetLevelEnd.Invoke();
     }
 

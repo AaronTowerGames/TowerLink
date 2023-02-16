@@ -40,6 +40,7 @@ public class HeroEquipment : MonoBehaviour
 
     private void GetGunLeftArm(string nameGun)
     {
+        Debug.Log("GetGun");
         skining.AddWeapon(_skeletonAnimation.skeleton, nameGun, false);
         _leftArm = WeaponDatas.Instance.GetGunByName(nameGun);
     }

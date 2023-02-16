@@ -32,7 +32,7 @@ public class AccauntController : GSC<AccauntController>
         EventBus.LoadAccauntData.Subscribe(Load);
         EventBus.SetAccauntDatas.Subscribe(SendAccauntData);
         EventBus.LoadHero.Subscribe(SetHero);
-        EventBus.CheckStage1LevelLoadingEnd.Subscribe(SetWeaponHero);
+        EventBus.OnSetHeroEquipment.Subscribe(SetWeaponHero);
     }
 
     private void OnDestroy()
@@ -45,6 +45,7 @@ public class AccauntController : GSC<AccauntController>
 
     private void SetWeaponHero()
     {
+        Debug.Log("SET WEAPON");
         EventBus.GetGunLeftArm.Invoke(WeaponDatas.Instance.Get(_data.idWeaponLeftArm).nameWeaponLeftHand);
         EventBus.GetGunRightArm.Invoke(WeaponDatas.Instance.Get(_data.idWeaponRightArm).nameWeaponRightHand);
     }

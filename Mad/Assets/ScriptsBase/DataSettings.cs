@@ -24,7 +24,7 @@ public static class DataSettings
 
     public const float START_Y_DISTANCE = 0f;
     public const float CELL_Y_DISTANCE = 100f;
-    public const float CELL_X_DISTANCE = 300f;
+    public const float CELL_X_DISTANCE = 230f;
 
     public const string GUN_R_REVOLVER = "GUN/Revolver/Gun_R_Revolver";
     public const string GUN_L_REVOLVER = "GUN/Revolver/Gun_L_Revolver";
