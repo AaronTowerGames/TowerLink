@@ -11,6 +11,8 @@ public class LevelController : MonoBehaviour
         EventBus.EndLevelTime.Subscribe(Lose);
         EventBus.LevelWin.Subscribe(Win);
         EventBus.LevelLose.Subscribe(Lose);
+        EventBus.HeroDie.Subscribe(Lose);
+
         EventBus.OnSetHeroEquipment.Subscribe(SetPositionHero);
     }
 
@@ -20,6 +22,8 @@ public class LevelController : MonoBehaviour
         EventBus.EndLevelTime.Unsubscribe(Lose);
         EventBus.LevelWin.Unsubscribe(Win);
         EventBus.LevelLose.Unsubscribe(Lose);
+        EventBus.HeroDie.Unsubscribe(Lose);
+        
         EventBus.OnSetHeroEquipment.Unsubscribe(SetPositionHero);
     }
 

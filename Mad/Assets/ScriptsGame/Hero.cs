@@ -1,14 +1,59 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Hero : MonoBehaviour
 {
     [SerializeField]
     private HeroData data = new HeroData();
+
+    private bool isStay = false;
     internal void SetData(HeroData heroData)
     {
-        data = heroData;
+        data = new HeroData()
+        {
+            hp= heroData.hp,
+            attackSpeed= heroData.attackSpeed,
+            crosshireSpeed= heroData.crosshireSpeed,
+            heroSkin= heroData.heroSkin,
+            id= heroData.id,
+            moveSpeed = heroData.moveSpeed
+        };
+    }
+
+    private void OnEnable()
+    {
+        EventBus.HeroDamage.Subscribe(GetDamage);
+        EventBus.HeroDOWN.Subscribe(HeroDOWN);
+        EventBus.HeroUP.Subscribe(HeroUP);
+    }
+
+    private void OnDestroy()
+    {
+        EventBus.HeroDamage.Unsubscribe(GetDamage);
+        EventBus.HeroDOWN.Unsubscribe(HeroDOWN);
+        EventBus.HeroUP.Unsubscribe(HeroUP);
+    }
+
+    private void HeroDOWN()
+    {
+        isStay = false;
+    }
+
+    private void HeroUP()
+    {
+        isStay = true;
+    }
+
+    private void GetDamage(int damage)
+    {
+        if (isStay)
+        {
+            data.hp -= damage;
+            EventBus.OnChangeHeroHP.Invoke(data.hp);
+            if (data.hp < 0)
+            {
+                EventBus.HeroDie.Invoke();
+            }
+        }
     }
 }

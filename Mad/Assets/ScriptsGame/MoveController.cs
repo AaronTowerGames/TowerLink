@@ -73,7 +73,7 @@ public class MoveController : MonoBehaviour
     {
         int startX = (int)(countPoss / 2f - 0.5f);
         _minPos = 0;
-        _maxPos = countPoss;
+        _maxPos = countPoss - 1;
         _nowPosition = startX;
         for (int i = -startX; i <= startX; i++)
         {

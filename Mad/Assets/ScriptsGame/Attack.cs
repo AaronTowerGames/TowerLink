@@ -87,6 +87,12 @@ public class Attack : MonoBehaviour
             FireLeftArm();
             FireRightArm();
         }
+        StartCoroutine(WaitUpAnimationEnd());
+    }
+
+    private IEnumerator WaitUpAnimationEnd()
+    {
+        yield return new WaitForSeconds(DataSettings.DELAY_DAMAGE_ENEMY_ANIMATION);
         EventBus.HeroDOWN.Invoke();
     }
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MoveCrosshair : MonoBehaviour
+public class CrosshairMove : MonoBehaviour
 {
     [SerializeField]
     private RectTransform _parentTransform;

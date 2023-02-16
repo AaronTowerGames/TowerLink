@@ -3,6 +3,12 @@ public static class DataSettings
     public static string LANGUAGE = "EN";
     public static float DELAY_CHECK_LOADED = 1f;
     public static float DELAY_SPAWN_ENEMY = 4f;
+    public static float DELAY_DAMAGE_ENEMY_ANIMATION = 0.25f;
+    public static float DELAY_DIE_ENEMY_ANIMATION = 2.25f;
+
+    public static float LINE1_POS_Z = -6f;
+    public static float LINE2_POS_Z = -4f;
+    public static float LINE3_POS_Z = -2f;
     public const float LINE0_POS_Y = -604f;
     public const float LINE1_POS_Y = -345f;
     public const float LINE2_POS_Y = -112f;

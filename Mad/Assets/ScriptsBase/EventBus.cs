@@ -80,6 +80,12 @@ public static class EventBus
 
     public static readonly Evt<Enemy> OnAddEnemyInScene = new Evt<Enemy>();    
     public static readonly Evt<Enemy> EnemyDie = new Evt<Enemy>();
+    public static readonly Evt<Enemy> OnChangeEnemyHP = new Evt<Enemy>();
+
+    public static readonly Evt HeroDie = new Evt();
+    public static readonly Evt<int> OnChangeHeroHP = new Evt<int>();
+    public static readonly Evt<int> HeroDamage = new Evt<int>();
+    
 
 
     //Equipment

@@ -1,5 +1,6 @@
 using Spine.Unity;
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageble
@@ -10,6 +11,11 @@ public class Enemy : MonoBehaviour, IDamageble
     [SerializeField]
     private SkeletonAnimation _skeletonAnimation;
 
+    public int GetHP()
+    {
+        return _data.hp;
+    }
+
     public void SetData(EnemyData data, int line)
     {
         _data = new EnemyData();
@@ -17,6 +23,7 @@ public class Enemy : MonoBehaviour, IDamageble
         _data.id = data.id;
         _data.hp = data.hp;
         _data.aimTime = data.aimTime;
+        _data.chance= data.chance;
 
         SetScale(line);
         SetLayer(line);
@@ -68,21 +75,45 @@ public class Enemy : MonoBehaviour, IDamageble
     private void OnEnable()
     {
         EventBus.Hit.Subscribe(GetDamage);
+        EventBus.HeroUP.Subscribe(DamageHero);
     }
 
     private void OnDestroy()
     {
         EventBus.Hit.Unsubscribe(GetDamage);
+        EventBus.HeroUP.Unsubscribe(DamageHero);
+    }
+
+    private void DamageHero()
+    {
+        StartCoroutine(WaitAimedEnd());
+    }
+
+    private IEnumerator WaitAimedEnd()
+    {
+        yield return new WaitForSeconds(_data.aimTime);
+        if (RandomizeSystem.Chance(_data.chance, 100))
+        {
+            EventBus.HeroDamage.Invoke(5);
+        }
+        
     }
 
     private void GetDamage(GameObject enemy, int damage)
     {
         if (enemy == this.gameObject)
         {
-            Debug.Log("SUDA URON" + damage);
             Damage(damage);
+            EventBus.OnChangeEnemyHP.Invoke(this);
+            _skeletonAnimation.AnimationName = "stand_damage";
+            StartCoroutine(WaitDamageAnimationEnd());
         }
-            
+    }
+
+    private IEnumerator WaitDamageAnimationEnd()
+    {
+        yield return new WaitForSeconds(DataSettings.DELAY_DAMAGE_ENEMY_ANIMATION);
+        _skeletonAnimation.AnimationName = "stand_idle";
     }
 
     private void Damage(int damage)
@@ -90,7 +121,15 @@ public class Enemy : MonoBehaviour, IDamageble
         _data.hp -= damage;
         if (_data.hp <= 0)
         {
-            EventBus.EnemyDie.Invoke(this);
+            _skeletonAnimation.AnimationName = "Death";
+            _skeletonAnimation.loop= false;
+            StartCoroutine(WaitDieAnimationEnd());
         }
+    }
+
+    private IEnumerator WaitDieAnimationEnd()
+    {
+        yield return new WaitForSeconds(DataSettings.DELAY_DIE_ENEMY_ANIMATION);
+        EventBus.EnemyDie.Invoke(this);
     }
 }
