@@ -17,7 +17,7 @@ public class MoveController : MonoBehaviour
     private int _nowPosition = 2, _minPos, _maxPos;
 
     [SerializeField]
-    private float _moveSpeed = 2f, changeFrame;
+    private float _moveSpeed = 0.001f, changeFrame;
     private Transform _transform;
 
     private Vector3 _position;
@@ -25,7 +25,7 @@ public class MoveController : MonoBehaviour
     private bool _isMoving = false, _isMoveRight = false, _isStay = false;
 
     [SerializeField]
-    private int frame = 0, frames = 60;
+    private int frame = 0, frames = 1000;
 
 
     private void Start()
@@ -152,11 +152,11 @@ public class MoveController : MonoBehaviour
         if (_isMoving)
         {
             frame++;
-            changeFrame = frame / (float)frames;
+            changeFrame = frame * DinamicTest.Instance.GetHeroMoveSpeed() / (float)(frames * _moveSpeed);
 
             _transform.localPosition = Vector3.Lerp(_position, _positions[_nowPosition], changeFrame);
             
-            if (frame >= frames)
+            if (frame * DinamicTest.Instance.GetHeroMoveSpeed() >= frames * _moveSpeed)
             {
                 _isMoving = false;
                 frame = 0;

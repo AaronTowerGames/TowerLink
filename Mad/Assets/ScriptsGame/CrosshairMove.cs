@@ -16,7 +16,7 @@ public class CrosshairMove : MonoBehaviour
     private float _changeFrame;
 
     [SerializeField]
-    private int _frame = 0, _frames = 60;
+    private int _frame = 0, _frames = 1000;
 
     [SerializeField]
     private float _parentMaxX, _parentMaxY;
@@ -25,7 +25,7 @@ public class CrosshairMove : MonoBehaviour
     private bool _isMoving = false;
 
     [SerializeField]
-    private float _speed = 30f;
+    private float _speed = 0.001f;
 
     private void Start()
     {
@@ -56,6 +56,7 @@ public class CrosshairMove : MonoBehaviour
     private void JoystickActivated()
     {
         _isJoystickMoving = true;
+        _isMoving = false;
 
         EventBus.AutoFireOn.Invoke();
     }
@@ -71,7 +72,7 @@ public class CrosshairMove : MonoBehaviour
             y = -_parentMaxY + _parentMaxY * 0.2f;
         }
 
-        _endPosition = new Vector3(vector.x, y, _startPosition.z);
+        _endPosition = new Vector3(vector.x , y, _startPosition.z);
 
         _frame = 0;
         _isJoystickMoving = false;
@@ -83,11 +84,11 @@ public class CrosshairMove : MonoBehaviour
         if (_isMoving)
         {
             _frame++;
-            _changeFrame = _frame / (float)_frames;
+            _changeFrame = _frame * DinamicTest.Instance.GetCrosshairSpeed() / (float)(_frames * _speed) * Screen.width / (Vector3.Distance(_startPosition, _endPosition) + Screen.width / 4);
 
             _transform.position = Vector3.Lerp(_startPosition, _endPosition, _changeFrame);
-
-            if (_frame >= _frames)
+            Debug.Log($"{Vector3.Distance(_startPosition, _endPosition)} {Screen.width / (Vector3.Distance(_startPosition, _endPosition) + Screen.width / 4)} {_changeFrame}");
+            if (_frame * DinamicTest.Instance.GetCrosshairSpeed() * Screen.width >= _frames * _speed * (Vector3.Distance(_startPosition, _endPosition) + Screen.width / 4))
             {
                 _isMoving = false;
             }
@@ -95,8 +96,26 @@ public class CrosshairMove : MonoBehaviour
 
         if (_isJoystickMoving)
         {
-            float x = _transform.localPosition.x + _joystick.Horizontal * _speed;
-            float y = _transform.localPosition.y + _joystick.Vertical * _speed;
+            float x = 0f;
+            if (Mathf.Abs(_joystick.Horizontal) > 0.2)
+            {
+                x = _transform.localPosition.x + _joystick.Horizontal * _speed * DinamicTest.Instance.GetCrosshairSpeed() / _frames;
+            }
+            else
+            {
+                x = _transform.localPosition.x;
+            }
+
+            float y = 0f;
+            if (Mathf.Abs(_joystick.Vertical) > 0.2)
+            {
+                y = _transform.localPosition.y + _joystick.Vertical * _speed * DinamicTest.Instance.GetCrosshairSpeed() / _frames;
+            }
+            else
+            {
+                y = _transform.localPosition.y;
+            }
+            
 
             if (x > _parentMaxX || x < -_parentMaxX)
             {
