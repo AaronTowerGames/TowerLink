@@ -2,7 +2,7 @@ Hero.png
 size:2048,512
 filter:Linear,Linear
 pma:true
-scale:0.6
+scale:1
 GG_Arm_L
 bounds:1118,135,92,184
 GG_Arm_L_none

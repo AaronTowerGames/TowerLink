@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 public class MoveCrosshairField : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField]
-    private MoveCrosshair moveCrosshair;
+    private CrosshairMove moveCrosshair;
 
     public void OnPointerDown(PointerEventData eventData)
     {
