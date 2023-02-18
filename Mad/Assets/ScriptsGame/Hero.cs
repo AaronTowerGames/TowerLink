@@ -7,6 +7,8 @@ public class Hero : MonoBehaviour
     private HeroData data = new HeroData();
 
     private bool isStay = false;
+
+    int hpTest = -999;
     internal void SetData(HeroData heroData)
     {
         data = new HeroData()
@@ -48,7 +50,14 @@ public class Hero : MonoBehaviour
     {
         if (isStay)
         {
-            data.hp -= damage;
+            if (hpTest == -999)
+            {
+                hpTest = (int)(data.hp * DinamicTest.Instance.GetHeroHP());
+            }
+            hpTest -= damage;
+            data.hp = hpTest;
+            //data.hp -= damage;
+
             EventBus.OnChangeHeroHP.Invoke(data.hp);
             if (data.hp < 0)
             {

@@ -4,15 +4,30 @@ using UnityEngine;
 
 public class CrosshairReload : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private ImageFiller _image;
+
+    private int _maxHP;
+
+    private void OnEnable()
     {
-        
+        EventBus.OnSetHero.Subscribe(SetHP);
+        EventBus.OnChangeHeroHP.Subscribe(ChangeHP);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        EventBus.OnSetHero.Unsubscribe(SetHP);
+        EventBus.OnChangeHeroHP.Unsubscribe(ChangeHP);
+    }
+
+    private void ChangeHP(int obj)
+    {
+        _image.SetFill(obj / (float)_maxHP);
+    }
+
+    private void SetHP(HeroData obj)
+    {
+        _maxHP = obj.hp;
     }
 }

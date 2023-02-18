@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour, IDamageble
 
     [SerializeField]
     private SkeletonAnimation _skeletonAnimation;
+    private int hpTest = -999;
 
     public int GetHP()
     {
@@ -91,10 +92,11 @@ public class Enemy : MonoBehaviour, IDamageble
 
     private IEnumerator WaitAimedEnd()
     {
-        yield return new WaitForSeconds(_data.aimTime);
+        //yield return new WaitForSeconds(_data.aimTime);
+        yield return new WaitForSeconds((int)(_data.aimTime * DinamicTest.Instance.GetEnemyAttackSpeed()));
         if (RandomizeSystem.Chance(_data.chance, 100))
         {
-            EventBus.HeroDamage.Invoke(5);
+            EventBus.HeroDamage.Invoke((int)DinamicTest.Instance.GetEnemyDamage());
         }
         
     }
@@ -118,7 +120,14 @@ public class Enemy : MonoBehaviour, IDamageble
 
     private void Damage(int damage)
     {
-        _data.hp -= damage;
+        if (hpTest == -999)
+        {
+            hpTest = (int)(_data.hp * DinamicTest.Instance.GetEnemyHP());
+        }
+        hpTest -= damage;
+        _data.hp = hpTest;
+
+        //_data.hp -= damage;
         if (_data.hp <= 0)
         {
             _skeletonAnimation.AnimationName = "Death";
