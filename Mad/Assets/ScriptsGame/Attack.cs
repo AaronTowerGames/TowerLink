@@ -80,6 +80,9 @@ public class Attack : MonoBehaviour
 
     private void FireFromButton()
     {
+        AutoFireOn();
+        return;
+
         EventBus.HeroUP.Invoke();
         if (!isAutoFire)
         {
