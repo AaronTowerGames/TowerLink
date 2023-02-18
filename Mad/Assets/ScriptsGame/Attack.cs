@@ -1,5 +1,4 @@
 using Spine.Unity;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -27,7 +26,7 @@ public class Attack : MonoBehaviour
 
     [SerializeField]
     private bool isAutoFire = false;
-    private float attackSpeed = 2f;
+    private float attackSpeed = 1f;
 
     private void Start()
     {
@@ -115,22 +114,21 @@ public class Attack : MonoBehaviour
         RaycastHit2D ray2d = Physics2D.Raycast(new Vector3(p.x, p.y, 0), Vector2.zero);
         if (ray2d.collider != null)
         {
-            Debug.Log("Попал?" + ray2d.collider.name);
             IDamageble damageble;
             if (ray2d.collider.TryGetComponent<IDamageble>(out damageble))
             {
                 Enemy enemy;
                 if (ray2d.collider.TryGetComponent<Enemy>(out enemy))
                 {
-                    Debug.Log("L DAMAGU: " + damage + " TYPE OBJECT: " + damageble.GetType() + " ENEMY: " + enemy);
-                    EventBus.Hit.Invoke(enemy.gameObject, damage);
+                    //EventBus.Hit.Invoke(enemy.gameObject, damage);
+                    EventBus.Hit.Invoke(enemy.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
                 }
 
                 Barrier barrier;
                 if (ray2d.collider.TryGetComponent<Barrier>(out barrier))
                 {
-                    Debug.Log("L DAMAGU: " + damage + " TYPE OBJECT: " + damageble.GetType() + " ENEMY: " + barrier);
-                    EventBus.Hit.Invoke(barrier.gameObject, damage);
+                    //EventBus.Hit.Invoke(barrier.gameObject, damage);
+                    EventBus.Hit.Invoke(barrier.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
                 }
             }
         }
@@ -152,7 +150,6 @@ public class Attack : MonoBehaviour
 
     private void FireRightArm()
     {
-        Debug.Log("TRY FIRE RIGHT");
         if (_heroEquipment.RightArm() == null)
         {
             return;
@@ -162,8 +159,6 @@ public class Attack : MonoBehaviour
             return;
         }
 
-        Debug.Log("FIRE RIGHT");
-
         var damage = 0;
 
         damage += _heroEquipment.RightArm().damage;
@@ -172,22 +167,21 @@ public class Attack : MonoBehaviour
         RaycastHit2D ray2d = Physics2D.Raycast(new Vector3 (p.x, p.y, 0), Vector2.zero, 10);
         if (ray2d.collider != null) //Не учитываем слой героя
         {
-            Debug.Log("Попал?" + ray2d.collider.name);
             IDamageble damageble;
             if (ray2d.collider.TryGetComponent<IDamageble>(out damageble))
             {
                 Enemy enemy;
                 if (ray2d.collider.TryGetComponent<Enemy>(out enemy))
                 {
-                    Debug.Log("R DAMAGU: " + damage + " TYPE OBJECT: " + damageble.GetType() + " ENEMY: " + enemy);
-                    EventBus.Hit.Invoke(enemy.gameObject, damage);
+                    //EventBus.Hit.Invoke(enemy.gameObject, damage);
+                    EventBus.Hit.Invoke(enemy.gameObject, (int)(1 * DinamicTest.Instance.GetHeroDamage()));
                 }
 
                 Barrier barrier;
                 if (ray2d.collider.TryGetComponent<Barrier>(out barrier))
                 {
-                    Debug.Log("R DAMAGU: " + damage + " TYPE OBJECT: " + damageble.GetType() + " ENEMY: " + barrier);
-                    EventBus.Hit.Invoke(barrier.gameObject, damage);
+                    //EventBus.Hit.Invoke(barrier.gameObject, damage);
+                    EventBus.Hit.Invoke(barrier.gameObject, (int)(1 * DinamicTest.Instance.GetHeroDamage()));
                 }
             }
         }
@@ -214,7 +208,8 @@ public class Attack : MonoBehaviour
         while (isAutoFire)
         {
             Debug.Log("AutoFireLeft");
-            yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed);
+            //yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed);
+            yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed());
             FireLeftArm();
         }
     }
@@ -224,7 +219,8 @@ public class Attack : MonoBehaviour
         while (isAutoFire)
         {
             Debug.Log("AutoFireRight");
-            yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed);
+            //yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed);
+            yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed());
             FireRightArm();
         }
     }

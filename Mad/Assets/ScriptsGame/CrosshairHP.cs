@@ -26,14 +26,7 @@ public class CrosshairHP : MonoBehaviour
 
     private void SetHP(HeroData obj)
     {
-        _maxHP = obj.hp;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.Escape))
-        {
-            EventBus.HeroDamage.Invoke(5);
-        }
+        //_maxHP = obj.hp;
+        _maxHP = (int)(obj.hp * DinamicTest.Instance.GetHeroHP());
     }
 }

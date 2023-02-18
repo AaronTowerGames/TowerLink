@@ -9,6 +9,16 @@ public static class DataSettings
     public static float LINE1_POS_Z = -6f;
     public static float LINE2_POS_Z = -4f;
     public static float LINE3_POS_Z = -2f;
+
+    public static float ENEMY_ATTACK_DAMAGE = 1f;
+    public static float ENEMY_ATTACK_SPEED = 1f;
+    public static float ENEMY_HP = 1f;
+    public static float HERO_DAMAGE = 1f;
+    public static float HERO_ATTACKSPEED = 1f;
+    public static float HERO_MOVESPEED = 1f;
+    public static float HERO_HP = 1f;
+    public static float CROSSHAIR_SPEED = 1f;
+
     public const float LINE0_POS_Y = -604f;
     public const float LINE1_POS_Y = -345f;
     public const float LINE2_POS_Y = -112f;
