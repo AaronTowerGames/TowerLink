@@ -10,7 +10,14 @@ public class Enemy : MonoBehaviour, IDamageble
 
     [SerializeField]
     private SkeletonAnimation _skeletonAnimation;
+
     private int hpTest = -999;
+
+    private float _attackSpeed = 0.05f;
+
+    private bool _isHeroShow = false;
+    private bool _isHeroLife = true;
+    private bool _isLife = true;
 
     public int GetHP()
     {
@@ -77,28 +84,93 @@ public class Enemy : MonoBehaviour, IDamageble
     {
         EventBus.Hit.Subscribe(GetDamage);
         EventBus.HeroUP.Subscribe(DamageHero);
+        EventBus.HeroDOWN.Subscribe(HeroHide);
+        EventBus.HeroDie.Subscribe(HeroDie);
     }
 
     private void OnDestroy()
     {
         EventBus.Hit.Unsubscribe(GetDamage);
         EventBus.HeroUP.Unsubscribe(DamageHero);
+        EventBus.HeroDOWN.Unsubscribe(HeroHide);
+        EventBus.HeroDie.Unsubscribe(HeroDie);
+    }
+
+    private void HeroDie()
+    {
+        _skeletonAnimation.AnimationName = "stand_idle";
+        _isHeroShow = false;
+        _isHeroLife = false;
+        StopAllCoroutines();
+    }
+
+    private void HeroHide()
+    {
+        _isHeroShow= false;
+    }
+
+    private void Start()
+    {
+        Teleportation();
+        StartCoroutine(TryFindHero());
+    }
+
+    private IEnumerator TryFindHero()
+    {
+        if (_isLife)
+        {
+            if (!_isHeroLife)
+            {
+                yield break;
+            }
+            while (!_isHeroShow)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            StartCoroutine(WaitAimedEnd());
+        }
+    }
+
+
+    private void Teleportation()
+    {
+        StartCoroutine(WaitTeleportationAnimationEnd());
+    }
+
+    private IEnumerator WaitTeleportationAnimationEnd()
+    {
+        _skeletonAnimation.AnimationName = "start";
+        yield return new WaitForSeconds(DataSettings.DELAY_ENEMY_TELEPORTATION_ANIMATION);
+        _skeletonAnimation.AnimationName = "stand_idle";
     }
 
     private void DamageHero()
     {
-        StartCoroutine(WaitAimedEnd());
+        _isHeroShow = true;
     }
 
     private IEnumerator WaitAimedEnd()
     {
         //yield return new WaitForSeconds(_data.aimTime);
-        yield return new WaitForSeconds((int)(_data.aimTime * DinamicTest.Instance.GetEnemyAttackSpeed()));
+        //Debug.Log("ENEMY AIM");
+        yield return new WaitForSeconds((int)(_data.aimTime * DinamicTest.Instance.GetEnemyAttackSpeed() * _attackSpeed));
+        //Debug.Log("ENEMY SHOOT");
+        StartCoroutine(WaitShootAnimationEnd());
         if (RandomizeSystem.Chance(_data.chance, 100))
         {
+            Debug.Log("ENEMY GOOD SHOOT");
             EventBus.HeroDamage.Invoke((int)DinamicTest.Instance.GetEnemyDamage());
         }
-        
+
+        StartCoroutine(TryFindHero());
+    }
+
+    private IEnumerator WaitShootAnimationEnd()
+    {
+        _skeletonAnimation.AnimationName = "stand_go_left";
+        yield return new WaitForSeconds(DataSettings.DELAY_ENEMY_ATTACK_ANIMATION);
+        _skeletonAnimation.AnimationName = "stand_idle";
     }
 
     private void GetDamage(GameObject enemy, int damage)
@@ -107,8 +179,6 @@ public class Enemy : MonoBehaviour, IDamageble
         {
             Damage(damage);
             EventBus.OnChangeEnemyHP.Invoke(this);
-            _skeletonAnimation.AnimationName = "stand_damage";
-            StartCoroutine(WaitDamageAnimationEnd());
         }
     }
 
@@ -130,14 +200,19 @@ public class Enemy : MonoBehaviour, IDamageble
         //_data.hp -= damage;
         if (_data.hp <= 0)
         {
-            _skeletonAnimation.AnimationName = "Death";
-            _skeletonAnimation.loop= false;
+            StopAllCoroutines();
             StartCoroutine(WaitDieAnimationEnd());
+        }
+        else
+        {
+            _skeletonAnimation.AnimationName = "stand_damage";
+            StartCoroutine(WaitDamageAnimationEnd());
         }
     }
 
     private IEnumerator WaitDieAnimationEnd()
     {
+        _skeletonAnimation.AnimationName = "Death";
         yield return new WaitForSeconds(DataSettings.DELAY_DIE_ENEMY_ANIMATION);
         EventBus.EnemyDie.Invoke(this);
     }

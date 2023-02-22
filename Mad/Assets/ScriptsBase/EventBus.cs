@@ -67,6 +67,9 @@ public static class EventBus
 
 
     //LocationLogic
+    public static readonly Evt<LevelPhaseData> OnSetMaxEnemyInScene = new Evt<LevelPhaseData>();
+    public static readonly Evt<int> OnChangeCountEnemyInScene = new Evt<int>();
+
     public static readonly Evt<SpawnPoint> AddSpawnPoint = new Evt<SpawnPoint>();
     public static readonly Evt<SpawnPoint> OnSpawnPointDestroy = new Evt<SpawnPoint>();
     public static readonly Evt<SpawnPoint> OnSpawnPointOpen = new Evt<SpawnPoint>();
@@ -96,10 +99,10 @@ public static class EventBus
     //Raycast
     public static readonly Evt<GameObject, int> Hit = new Evt<GameObject, int>();
 
-    //Controller
+    //HeroController
     public static readonly Evt MoveLeftButtonClicked = new Evt();
     public static readonly Evt MoveRightButtonClicked = new Evt();
-    public static readonly Evt FireButtonClicked = new Evt();
+    public static readonly Evt<bool> FireButtonClicked = new Evt<bool>();
     public static readonly Evt AutoFireOn = new Evt();
     public static readonly Evt AutoFireOff = new Evt();
     public static readonly Evt HeroUP = new Evt();

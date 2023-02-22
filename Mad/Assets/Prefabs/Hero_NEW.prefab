@@ -53,7 +53,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3789030183765410340}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -123,8 +123,8 @@ MonoBehaviour:
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
   updateTiming: 1
-  unscaledTime: 0
-  _animationName: sit_idle
+  unscaledTime: 1
+  _animationName: black
   loop: 1
   timeScale: 1
 --- !u!61 &3995660375472076398
@@ -172,6 +172,8 @@ MonoBehaviour:
     moveSpeed: 0
     crosshireSpeed: 0
     heroSkin: 0
+  meshRenderermeshRenderer: {fileID: 3789030183765410361}
+  _skeletonAnimation: {fileID: 3789030183765410342}
 --- !u!114 &4485407693610508711
 MonoBehaviour:
   m_ObjectHideFlags: 0

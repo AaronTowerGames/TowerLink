@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +12,14 @@ public class Spawner : MonoBehaviour
     private List<EnemyData> _enemiesToAdd = new List<EnemyData>();
 
     private IEnumerator tryspawn;
+
+    private int maxEnemyInScene = 0;
+    private int enemyInScene = 0;
+
     private void OnEnable()
     {
+        EventBus.OnSetMaxEnemyInScene.Subscribe(SetMaxEnemyInScene);
+
         EventBus.StartLevel.Subscribe(StartLevel);
 
         EventBus.SpawnStartEnemy.Subscribe(SpawnStartEnemy);
@@ -23,10 +30,13 @@ public class Spawner : MonoBehaviour
         EventBus.OnSpawnPointClose.Subscribe(SpawnPointClose);
 
         EventBus.OnAddEnemy.Subscribe(AddEnemy);
+        EventBus.OnChangeCountEnemyInScene.Subscribe(SetCountEnemyInScene);
     }
 
     private void OnDisable()
     {
+        EventBus.OnSetMaxEnemyInScene.Unsubscribe(SetMaxEnemyInScene);
+
         EventBus.StartLevel.Unsubscribe(StartLevel);
         
         EventBus.SpawnStartEnemy.Unsubscribe(SpawnStartEnemy);
@@ -34,7 +44,19 @@ public class Spawner : MonoBehaviour
         EventBus.OnSpawnPointDestroy.Unsubscribe(DestroySpawnPoint);
         EventBus.OnSpawnPointOpen.Unsubscribe(SpawnPointOpen);
         EventBus.OnSpawnPointClose.Unsubscribe(SpawnPointClose);
+
         EventBus.OnAddEnemy.Unsubscribe(AddEnemy);
+        EventBus.OnChangeCountEnemyInScene.Subscribe(SetCountEnemyInScene);
+    }
+
+    private void SetCountEnemyInScene(int obj)
+    {
+        enemyInScene = obj;
+    }
+
+    private void SetMaxEnemyInScene(LevelPhaseData obj)
+    {
+        maxEnemyInScene = obj.maxEnemyInScene;
     }
 
     private void StartLevel()
@@ -105,7 +127,10 @@ public class Spawner : MonoBehaviour
     {
         while (_enemiesToAdd.Count > 0)
         {
-            TryAddEnemy();
+            if (enemyInScene < maxEnemyInScene)
+            {
+                TryAddEnemy();
+            }
             yield return new WaitForSeconds(1);
         }
     }
@@ -117,17 +142,20 @@ public class Spawner : MonoBehaviour
             return;
         }
 
+        List<SpawnPoint> openSpawns = new List<SpawnPoint>();
         foreach (var spawn in _spawnPoints)
         {
             if (!spawn.IsClosed())
             {
-                Spawn(spawn);
+                openSpawns.Add(spawn);
             }
+        }
 
-            if (_enemiesToAdd.Count == 0)
-            {
-                return;
-            }
+        if (openSpawns.Count > 0)
+        {
+            int randomNum = RandomizeSystem.GetRandom(openSpawns.Count);
+
+            Spawn(openSpawns[randomNum]);
         }
     }
 
@@ -136,7 +164,7 @@ public class Spawner : MonoBehaviour
         foreach (var enemy in _enemiesToAdd)
         {
             var obj = FactoryAbstractHandler.Instance.CreateEnemyPistolMan();
-            Vector3 vector = new Vector3(0, 50, 0);
+            Vector3 vector = new Vector3(0, 180, 0);
             var line = spawn.GetLine();
             obj.transform.position = spawn.GetPosition() - vector;
             obj.transform.SetParent(spawn.transform.parent);

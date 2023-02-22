@@ -10,4 +10,5 @@ public class LevelData
     public int idLocationData;
     public int idEnemyLevelPool;
     public int startEnemyCount;
+    public int startMaxEnemyCount;
 }

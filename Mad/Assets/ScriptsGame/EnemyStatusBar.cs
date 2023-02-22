@@ -13,11 +13,14 @@ public class EnemyStatusBar : MonoBehaviour
 
     private int _maxHP;
 
+    private bool isFirst = true;
+
     public void SetData(Enemy enemy)
     {
         _enemy = enemy;
         _maxHP = _enemy.GetHP();
         ChangeHP(_enemy);
+        isFirst= true;
     }
 
     private void OnEnable()
@@ -42,6 +45,12 @@ public class EnemyStatusBar : MonoBehaviour
 
     private void ChangeHP(Enemy enemy)
     {
+        if (isFirst)
+        {
+            _maxHP = enemy.GetHP();
+            isFirst = false;
+        }
+
         if (enemy == _enemy)
         {
             _imageFiller.SetFill(enemy.GetHP() / (float)_maxHP);

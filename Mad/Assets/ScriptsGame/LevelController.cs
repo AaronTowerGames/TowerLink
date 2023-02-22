@@ -11,7 +11,6 @@ public class LevelController : MonoBehaviour
         EventBus.EndLevelTime.Subscribe(Lose);
         EventBus.LevelWin.Subscribe(Win);
         EventBus.LevelLose.Subscribe(Lose);
-        EventBus.HeroDie.Subscribe(Lose);
 
         EventBus.OnSetHeroEquipment.Subscribe(SetPositionHero);
     }
@@ -22,7 +21,6 @@ public class LevelController : MonoBehaviour
         EventBus.EndLevelTime.Unsubscribe(Lose);
         EventBus.LevelWin.Unsubscribe(Win);
         EventBus.LevelLose.Unsubscribe(Lose);
-        EventBus.HeroDie.Unsubscribe(Lose);
         
         EventBus.OnSetHeroEquipment.Unsubscribe(SetPositionHero);
     }
@@ -34,7 +32,17 @@ public class LevelController : MonoBehaviour
 
     private void Set(LevelData obj)
     {
-        _levelData = obj;
+        _levelData = new LevelData
+        {
+            idEnemyLevelPool= obj.idEnemyLevelPool,
+            idLocationData=obj.idLocationData,
+            level=obj.level,
+            roundTimeSeconds=obj.roundTimeSeconds,
+            startEnemyCount=obj.startEnemyCount,
+            startMaxEnemyCount=obj.startMaxEnemyCount,
+            _countLocation = obj._countLocation,
+            _countPoss = obj._countPoss
+        };
         
         EventBus.OnSetLevelEnd.Invoke();
     }
@@ -42,10 +50,12 @@ public class LevelController : MonoBehaviour
     private void Win()
     {
         Debug.Log("WIN");
+        EventBus.Show.Invoke("PauseCanvas");
     }
 
     private void Lose()
     {
         Debug.Log("LOSE");
+        EventBus.Show.Invoke("PauseCanvas");
     }
 }

@@ -1,5 +1,6 @@
 using Spine.Unity;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ public class MoveController : MonoBehaviour
 
     private Vector3 _position;
 
-    private bool _isMoving = false, _isMoveRight = false, _isStay = false;
+    private bool _isMoving = false, _isMoveRight = false, _isStay = false, _isHeroLife = true;
 
     [SerializeField]
     private int frame = 0, frames = 1000;
@@ -40,6 +41,8 @@ public class MoveController : MonoBehaviour
         EventBus.MoveRightButtonClicked.Subscribe(MoveRight);
         EventBus.HeroUP.Subscribe(HeroUP);
         EventBus.HeroDOWN.Subscribe(HeroDOWN);
+        EventBus.OnChangeHeroHP.Subscribe(TakeDamageAnim);
+        EventBus.HeroDie.Subscribe(HeroDie);
     }
 
     private void OnDisable()
@@ -49,6 +52,26 @@ public class MoveController : MonoBehaviour
         EventBus.MoveRightButtonClicked.Unsubscribe(MoveRight);
         EventBus.HeroUP.Unsubscribe(HeroUP);
         EventBus.HeroDOWN.Unsubscribe(HeroDOWN);
+        EventBus.OnChangeHeroHP.Unsubscribe(TakeDamageAnim);
+        EventBus.HeroDie.Unsubscribe(HeroDie);
+    }
+
+    private void HeroDie()
+    {
+        StopAllCoroutines();
+        _isHeroLife = false;
+    }
+
+    private void TakeDamageAnim(int obj)
+    {
+        _skeletonAnimation.AnimationName = "damage";
+        StartCoroutine(WaitDamageAnimationEnd());
+    }
+
+    private IEnumerator WaitDamageAnimationEnd()
+    {
+        yield return new WaitForSeconds(DataSettings.DELAY_DAMAGE_ENEMY_ANIMATION);
+        _skeletonAnimation.AnimationName = "stand_idle";
     }
 
     private void HeroDOWN()
@@ -149,18 +172,21 @@ public class MoveController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isMoving)
+        if (_isHeroLife)
         {
-            frame++;
-            changeFrame = frame * DinamicTest.Instance.GetHeroMoveSpeed() / (float)(frames * _moveSpeed);
-
-            _transform.localPosition = Vector3.Lerp(_position, _positions[_nowPosition], changeFrame);
-            
-            if (frame * DinamicTest.Instance.GetHeroMoveSpeed() >= frames * _moveSpeed)
+            if (_isMoving)
             {
-                _isMoving = false;
-                frame = 0;
-                _skeletonAnimation.AnimationName = "sit_idle";
+                frame++;
+                changeFrame = frame * DinamicTest.Instance.GetHeroMoveSpeed() / (float)(frames * _moveSpeed);
+
+                _transform.localPosition = Vector3.Lerp(_position, _positions[_nowPosition], changeFrame);
+
+                if (frame * DinamicTest.Instance.GetHeroMoveSpeed() >= frames * _moveSpeed)
+                {
+                    _isMoving = false;
+                    frame = 0;
+                    _skeletonAnimation.AnimationName = "sit_idle";
+                }
             }
         }
     }

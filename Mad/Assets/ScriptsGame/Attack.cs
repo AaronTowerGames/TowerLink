@@ -25,8 +25,8 @@ public class Attack : MonoBehaviour
     private RectTransform _transform;
 
     [SerializeField]
-    private bool isAutoFire = false;
-    private float attackSpeed = 1f;
+    private bool isAutoFire = false, _isHeroLife = true;
+    private float attackSpeed = 0.05f;
 
     private void Start()
     {
@@ -39,6 +39,7 @@ public class Attack : MonoBehaviour
         EventBus.FireButtonClicked.Subscribe(FireFromButton);
         EventBus.AutoFireOn.Subscribe(AutoFireOn);
         EventBus.AutoFireOff.Subscribe(AutoFireOff);
+        EventBus.HeroDie.Subscribe(HeroDie);
     }
 
     private void OnDisable()
@@ -47,6 +48,13 @@ public class Attack : MonoBehaviour
         EventBus.FireButtonClicked.Unsubscribe(FireFromButton);
         EventBus.AutoFireOn.Unsubscribe(AutoFireOn);
         EventBus.AutoFireOff.Unsubscribe(AutoFireOff);
+        EventBus.HeroDie.Unsubscribe(HeroDie);
+    }
+
+    private void HeroDie()
+    {
+        _isHeroLife = false;
+        StopAllCoroutines();
     }
 
     private void SetHeroEquipment(HeroEquipment obj)
@@ -57,6 +65,10 @@ public class Attack : MonoBehaviour
 
     private void AutoFireOn()
     {
+        if (!_isHeroLife)
+        {
+            return;
+        }
         EventBus.HeroUP.Invoke();
         isAutoFire = true;
         if (_heroEquipment.LeftArm() != null)
@@ -73,14 +85,27 @@ public class Attack : MonoBehaviour
 
     private void AutoFireOff()
     {
+        if (!_isHeroLife)
+        {
+            return;
+        }
+        Debug.Log("AUTO FIRE OFF");
         EventBus.HeroDOWN.Invoke();
         isAutoFire = false;
         StopAllCoroutines();
     }
 
-    private void FireFromButton()
+    private void FireFromButton(bool isClicked)
     {
-        AutoFireOn();
+        if (isClicked)
+        {
+            AutoFireOn();
+        }
+        else
+        {
+            AutoFireOff();
+        }
+        /*
         return;
 
         EventBus.HeroUP.Invoke();
@@ -89,7 +114,7 @@ public class Attack : MonoBehaviour
             FireLeftArm();
             FireRightArm();
         }
-        StartCoroutine(WaitUpAnimationEnd());
+        StartCoroutine(WaitUpAnimationEnd());/**/
     }
 
     private IEnumerator WaitUpAnimationEnd()
@@ -210,10 +235,11 @@ public class Attack : MonoBehaviour
     {
         while (isAutoFire)
         {
+            EventBus.HeroUP.Invoke();
             Debug.Log("AutoFireLeft");
             //yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed);
-            yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed());
             FireLeftArm();
+            yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed() * attackSpeed);
         }
     }
 
@@ -223,8 +249,8 @@ public class Attack : MonoBehaviour
         {
             Debug.Log("AutoFireRight");
             //yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed);
-            yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed());
             FireRightArm();
+            yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed() * attackSpeed);
         }
     }
 }
