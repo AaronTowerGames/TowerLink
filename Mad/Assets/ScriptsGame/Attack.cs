@@ -25,8 +25,8 @@ public class Attack : MonoBehaviour
     private RectTransform _transform;
 
     [SerializeField]
-    private bool isAutoFire = false;
-    private float attackSpeed = 1f;
+    private bool isAutoFire = false, _isHeroLife = true;
+    private float attackSpeed = 0.05f;
 
     private void Start()
     {
@@ -39,6 +39,7 @@ public class Attack : MonoBehaviour
         EventBus.FireButtonClicked.Subscribe(FireFromButton);
         EventBus.AutoFireOn.Subscribe(AutoFireOn);
         EventBus.AutoFireOff.Subscribe(AutoFireOff);
+        EventBus.HeroDie.Subscribe(HeroDie);
     }
 
     private void OnDisable()
@@ -47,6 +48,13 @@ public class Attack : MonoBehaviour
         EventBus.FireButtonClicked.Unsubscribe(FireFromButton);
         EventBus.AutoFireOn.Unsubscribe(AutoFireOn);
         EventBus.AutoFireOff.Unsubscribe(AutoFireOff);
+        EventBus.HeroDie.Unsubscribe(HeroDie);
+    }
+
+    private void HeroDie()
+    {
+        _isHeroLife = false;
+        StopAllCoroutines();
     }
 
     private void SetHeroEquipment(HeroEquipment obj)
@@ -57,6 +65,10 @@ public class Attack : MonoBehaviour
 
     private void AutoFireOn()
     {
+        if (!_isHeroLife)
+        {
+            return;
+        }
         EventBus.HeroUP.Invoke();
         isAutoFire = true;
         if (_heroEquipment.LeftArm() != null)
@@ -73,14 +85,26 @@ public class Attack : MonoBehaviour
 
     private void AutoFireOff()
     {
+        if (!_isHeroLife)
+        {
+            return;
+        }
         EventBus.HeroDOWN.Invoke();
         isAutoFire = false;
         StopAllCoroutines();
     }
 
-    private void FireFromButton()
+    private void FireFromButton(bool isClicked)
     {
-        AutoFireOn();
+        if (isClicked)
+        {
+            AutoFireOn();
+        }
+        else
+        {
+            AutoFireOff();
+        }
+        /*
         return;
 
         EventBus.HeroUP.Invoke();
@@ -89,7 +113,7 @@ public class Attack : MonoBehaviour
             FireLeftArm();
             FireRightArm();
         }
-        StartCoroutine(WaitUpAnimationEnd());
+        StartCoroutine(WaitUpAnimationEnd());/**/
     }
 
     private IEnumerator WaitUpAnimationEnd()
@@ -125,13 +149,22 @@ public class Attack : MonoBehaviour
                 {
                     //EventBus.Hit.Invoke(enemy.gameObject, damage);
                     EventBus.Hit.Invoke(enemy.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
+                    EventBus.FXRun.Invoke(FXTypes.Blood, p);
                 }
 
-                Barrier barrier;
-                if (ray2d.collider.TryGetComponent<Barrier>(out barrier))
+                BarrierGarbage garbage;
+                if (ray2d.collider.TryGetComponent<BarrierGarbage>(out garbage))
                 {
+                    Debug.Log("EYE GARBAGE");
                     //EventBus.Hit.Invoke(barrier.gameObject, damage);
-                    EventBus.Hit.Invoke(barrier.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
+                    EventBus.Hit.Invoke(garbage.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
+                }
+                BarrierStone stone;
+                if (ray2d.collider.TryGetComponent<BarrierStone>(out stone))
+                {
+                    Debug.Log("EYE STONE");
+                    //EventBus.Hit.Invoke(barrier.gameObject, damage);
+                    EventBus.Hit.Invoke(stone.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
                 }
             }
         }
@@ -180,11 +213,19 @@ public class Attack : MonoBehaviour
                     EventBus.Hit.Invoke(enemy.gameObject, (int)(1 * DinamicTest.Instance.GetHeroDamage()));
                 }
 
-                Barrier barrier;
-                if (ray2d.collider.TryGetComponent<Barrier>(out barrier))
+                BarrierGarbage garbage;
+                if (ray2d.collider.TryGetComponent<BarrierGarbage>(out garbage))
                 {
+                    Debug.Log("EYE GARBAGE R");
                     //EventBus.Hit.Invoke(barrier.gameObject, damage);
-                    EventBus.Hit.Invoke(barrier.gameObject, (int)(1 * DinamicTest.Instance.GetHeroDamage()));
+                    EventBus.Hit.Invoke(garbage.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
+                }
+                BarrierStone stone;
+                if (ray2d.collider.TryGetComponent<BarrierStone>(out stone))
+                {
+                    Debug.Log("EYE STONE R");
+                    //EventBus.Hit.Invoke(barrier.gameObject, damage);
+                    EventBus.Hit.Invoke(stone.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
                 }
             }
         }
@@ -210,10 +251,10 @@ public class Attack : MonoBehaviour
     {
         while (isAutoFire)
         {
-            Debug.Log("AutoFireLeft");
+            EventBus.HeroUP.Invoke();
             //yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed);
-            yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed());
             FireLeftArm();
+            yield return new WaitForSeconds(_heroEquipment.LeftArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed() * attackSpeed);
         }
     }
 
@@ -221,10 +262,9 @@ public class Attack : MonoBehaviour
     {
         while (isAutoFire)
         {
-            Debug.Log("AutoFireRight");
             //yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed);
-            yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed());
             FireRightArm();
+            yield return new WaitForSeconds(_heroEquipment.RightArm().attackSpeed * DinamicTest.Instance.GetHeroAttackSpeed() * attackSpeed);
         }
     }
 }

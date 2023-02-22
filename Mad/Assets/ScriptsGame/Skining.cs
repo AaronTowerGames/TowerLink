@@ -7,6 +7,15 @@ public class Skining: MonoBehaviour
     private Skin leftHand = null;
     private Skin rightHand = null;
 
+    public void SetSkin(Skeleton _skeleton, string slotName)
+    {
+        var _skeletonData = _skeleton.Data;
+        var mixAndMatchSkin = _skeletonData.FindSkin(slotName);
+
+        _skeleton.SetSkin(mixAndMatchSkin);
+        _skeleton.SetSlotsToSetupPose();
+    }
+
     public void AddWeapon(Skeleton _skeleton, string slotName, bool isLeftHand = true)
     {
         var skeleton = _skeleton;

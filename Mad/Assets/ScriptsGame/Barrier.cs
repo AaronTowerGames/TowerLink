@@ -1,29 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
+using Spine.Unity;
 using UnityEngine;
 
-public class Barrier : MonoBehaviour, IDamageble
+public abstract class Barrier : MonoBehaviour, IDamageble
 {
-    private BarrierData _data;
+    [SerializeField]
+    internal SkeletonAnimation _skeletonAnimation;
 
-    public void SetData(BarrierData data)
-    {
-        _data = data;
-    }
+    [SerializeField]
+    internal Skining _skining;
 
-    private void OnEnable()
-    {
-        EventBus.Hit.Subscribe(GetDamage);
-    }
+    [SerializeField]
+    internal BarrierData _data;
 
-    private void OnDisable()
-    {
-        EventBus.Hit.Subscribe(GetDamage);
-    }
+    [SerializeField]
+    internal BoxCollider2D _boxCollider;
 
-    private void GetDamage(GameObject barrier, int damage)
+    internal int _maxHP;
+
+    /*
+    private void OnValidate()
     {
-        if (barrier == this.gameObject)
-            Debug.Log("Pitun");
+        _boxCollider = GetComponent<BoxCollider2D>();
+        _skining= GetComponent<Skining>();
+        _skeletonAnimation = GetComponent<SkeletonAnimation>();
+        _data.hp = 1;
+    }/**/
+
+    internal virtual void GetDamage(GameObject barrier, int damage)
+    {
+        
     }
 }

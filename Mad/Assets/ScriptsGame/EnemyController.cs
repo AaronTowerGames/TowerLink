@@ -50,6 +50,7 @@ public class EnemyController : MonoBehaviour
     {
         _enemiesInScene.Remove(obj);
         Destroy(obj.gameObject);
+        EventBus.OnChangeCountEnemyInScene.Invoke(_enemiesInScene.Count);
     }
 
     private void SetReadyToStage2Loading()
@@ -67,6 +68,7 @@ public class EnemyController : MonoBehaviour
     private void AddEnemy(Enemy obj)
     {
         _enemiesInScene.Add(obj);
+        EventBus.OnChangeCountEnemyInScene.Invoke(_enemiesInScene.Count);
     }
 
     private void SetStartEnemyCount(LevelData obj)

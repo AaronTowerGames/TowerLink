@@ -8,7 +8,7 @@ public class DinamicTest : GSC<DinamicTest>
     private InputField nameSetup;
 
     [SerializeField]
-    private Slider sliderEnemyDamage, sliderEnemyHP, sliderEnemyAttackSpeed, sliderHeroDamage, sliderHepoAttackSpeed, sliderCrosshireSpeed, sliderHeroMoveSpeed, sliderHeroHP;
+    private Slider sliderEnemyDamage, sliderEnemyHP, sliderEnemyAttackSpeed, sliderHeroDamage, sliderHepoAttackSpeed, sliderCrosshireSpeed, sliderHeroMoveSpeed, sliderHeroHP, sliderGarbageHP, sliderStoneHP;
 
     internal float GetEnemyDamage()
     {
@@ -43,6 +43,14 @@ public class DinamicTest : GSC<DinamicTest>
     internal float GetCrosshairSpeed()
     {
         return sliderCrosshireSpeed.value;
+    }
+    internal int GetGarbageHP()
+    {
+        return (int)sliderGarbageHP.value;
+    }
+    internal int GetStoneHP()
+    {
+        return (int)sliderStoneHP.value;
     }
 
     private void Start()
@@ -84,7 +92,6 @@ public class DinamicTest : GSC<DinamicTest>
         else
         {
             sliderHeroDamage.value = DataSettings.HERO_DAMAGE;
-
         }
 
         if (PlayerPrefs.HasKey("HERO_ATTACKSPEED"))
@@ -125,6 +132,24 @@ public class DinamicTest : GSC<DinamicTest>
         {
             sliderCrosshireSpeed.value = DataSettings.CROSSHAIR_SPEED;
 
+        }
+
+        if (PlayerPrefs.HasKey("BARRIER_STONE_HP"))
+        {
+            sliderStoneHP.value = PlayerPrefs.GetFloat("BARRIER_STONE_HP");
+        }
+        else
+        {
+            sliderStoneHP.value = DataSettings.BARRIER_STONE_HP;
+        }
+
+        if (PlayerPrefs.HasKey("BARRIER_GARBAGE_HP"))
+        {
+            sliderGarbageHP.value = PlayerPrefs.GetFloat("BARRIER_GARBAGE_HP");
+        }
+        else
+        {
+            sliderGarbageHP.value = DataSettings.BARRIER_GARBAGE_HP;
         }
     }
 }

@@ -53,6 +53,14 @@ public class DinamicTestSlider : MonoBehaviour
         {
             PlayerPrefs.SetFloat("CROSSHAIR_MOVESPEED", slider.value);
         }
+        else if (fieldType == DinamicTestFieldType.BARRIER_GARBAGE_HP)
+        {
+            PlayerPrefs.SetFloat("BARRIER_GARBAGE_HP", slider.value);
+        }
+        else if (fieldType == DinamicTestFieldType.BARRIER_STONE_HP)
+        {
+            PlayerPrefs.SetFloat("BARRIER_STONE_HP", slider.value);
+        }
 
         PlayerPrefs.Save();
 
