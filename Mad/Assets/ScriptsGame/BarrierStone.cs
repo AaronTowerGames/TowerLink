@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BarrierStone : Barrier
@@ -6,6 +7,23 @@ public class BarrierStone : Barrier
     internal BarrierType _type = BarrierType.Stone;
 
     private void Start()
+    {
+        SetHp();
+    }
+
+    private void OnEnable()
+    {
+        EventBus.StartLevel.Subscribe(SetHp);
+        EventBus.Hit.Subscribe(GetDamage);
+    }
+
+    private void OnDestroy()
+    {
+        EventBus.StartLevel.Unsubscribe(SetHp);
+        EventBus.Hit.Subscribe(GetDamage);
+    }
+
+    private void SetHp()
     {
         _data.hp = DinamicTest.Instance.GetStoneHP();
         _maxHP = DinamicTest.Instance.GetStoneHP();

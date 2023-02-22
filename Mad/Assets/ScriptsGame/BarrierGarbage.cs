@@ -8,13 +8,29 @@ public class BarrierGarbage : Barrier
 
     private void Start()
     {
+        SetHp();
+    }
+    private void OnEnable()
+    {
+        EventBus.StartLevel.Subscribe(SetHp);
+        EventBus.Hit.Subscribe(GetDamage);
+    }
+
+    private void OnDestroy()
+    {
+        EventBus.StartLevel.Unsubscribe(SetHp);
+        EventBus.Hit.Subscribe(GetDamage);
+    }
+
+    private void SetHp()
+    {
         _data.hp = DinamicTest.Instance.GetGarbageHP();
         _maxHP = DinamicTest.Instance.GetGarbageHP();
     }
 
     internal override void GetDamage(GameObject barrier, int damage)
     {
-        if (barrier == this.gameObject)
+        if (barrier == gameObject)
         {
             _data.hp -= damage;
             float percent = _data.hp / (float)DinamicTest.Instance.GetGarbageHP();

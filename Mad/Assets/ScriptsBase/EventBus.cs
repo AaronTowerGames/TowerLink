@@ -88,9 +88,10 @@ public static class EventBus
     public static readonly Evt HeroDie = new Evt();
     public static readonly Evt<int> OnChangeHeroHP = new Evt<int>();
     public static readonly Evt<int> HeroDamage = new Evt<int>();
+
+    //FX
+    public static readonly Evt<FXTypes, Vector3> FXRun = new Evt<FXTypes, Vector3>();
     
-
-
     //Equipment
     public static readonly Evt<string> GetGunLeftArm = new Evt<string>();
     public static readonly Evt<string> GetGunRightArm = new Evt<string>();
