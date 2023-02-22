@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonDataAsset: {fileID: 11400000, guid: 33033b4439fb74cd0a38d8c02ea8f58c, type: 2}
-  initialSkinName: Pistol_2
+  initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
   initialFlipY: 0
@@ -137,4 +137,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     id: 0
+    type: 0
+    chance: 0
     hp: 0
+    aimTime: 0
+  _skeletonAnimation: {fileID: 0}
