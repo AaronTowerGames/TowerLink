@@ -155,14 +155,12 @@ public class Attack : MonoBehaviour
                 BarrierGarbage garbage;
                 if (ray2d.collider.TryGetComponent<BarrierGarbage>(out garbage))
                 {
-                    Debug.Log("EYE GARBAGE");
                     //EventBus.Hit.Invoke(barrier.gameObject, damage);
                     EventBus.Hit.Invoke(garbage.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
                 }
                 BarrierStone stone;
                 if (ray2d.collider.TryGetComponent<BarrierStone>(out stone))
                 {
-                    Debug.Log("EYE STONE");
                     //EventBus.Hit.Invoke(barrier.gameObject, damage);
                     EventBus.Hit.Invoke(stone.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
                 }
@@ -216,14 +214,12 @@ public class Attack : MonoBehaviour
                 BarrierGarbage garbage;
                 if (ray2d.collider.TryGetComponent<BarrierGarbage>(out garbage))
                 {
-                    Debug.Log("EYE GARBAGE R");
                     //EventBus.Hit.Invoke(barrier.gameObject, damage);
                     EventBus.Hit.Invoke(garbage.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
                 }
                 BarrierStone stone;
                 if (ray2d.collider.TryGetComponent<BarrierStone>(out stone))
                 {
-                    Debug.Log("EYE STONE R");
                     //EventBus.Hit.Invoke(barrier.gameObject, damage);
                     EventBus.Hit.Invoke(stone.gameObject, (int)(damage * DinamicTest.Instance.GetHeroDamage()));
                 }

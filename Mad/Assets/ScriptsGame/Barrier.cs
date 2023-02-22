@@ -13,7 +13,7 @@ public abstract class Barrier : MonoBehaviour, IDamageble
     internal BarrierData _data;
 
     [SerializeField]
-    internal BoxCollider2D _boxCollider;
+    public BoxCollider2D _boxCollider;
 
     internal int _maxHP;
 
